@@ -1,0 +1,10 @@
+ ***Section:Topics***
+
+PostName:   ${Posts.post}  
+
+ ***end***
+ ***Section:Contents***
+Posts:  
+<%if(  $Posts.post=='A'  )  print "A"  %>
+
+ ***end***
