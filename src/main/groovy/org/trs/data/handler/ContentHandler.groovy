@@ -1,7 +1,9 @@
 package org.trs.data.handler
 
+import groovy.json.JsonBuilder;
 import groovy.text.SimpleTemplateEngine
 
+import org.trs.cms.pg.itf.PG01O
 import org.trs.data.domain.svc.SessionCatalog
 import org.trs.itf.svc.PageReader
 
@@ -43,6 +45,12 @@ class ContentHandler {
 		return template
 	}
 
+	def resolvePage_json(String pageName){
+		String expression =pageName;
+		Object page = new PG01O()
+		JsonBuilder builder = new JsonBuilder(page)
+		return builder.toString()		
+	}
 	
 	
 }

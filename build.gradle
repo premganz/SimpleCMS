@@ -13,3 +13,18 @@ dependencies {
 	compile 'joda-time:joda-time:2.6'
 	runtime 'joda-time:joda-time:2.6'
 }
+
+tasks.withType(JavaCompile) {
+	options.fork = true
+	options.forkOptions.executable = "/usr/bin/javac"
+}
+
+tasks.withType(GroovyCompile) {
+	options.fork = true
+	options.forkOptions.executable = "/usr/bin/javac"
+}
+
+task vh(type: JavaExec) {
+	main = "org.trs.itf.handler.MainProxy"
+	classpath = sourceSets.main.runtimeClasspath
+}

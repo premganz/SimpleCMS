@@ -18,7 +18,7 @@ class TopicDispatcher {
 			SessionCatalog.setScenario("")
 			return ""
 		}else if (topic.equals("pages")){
-			return pageHandler.resolvePage(msg)
+			return pageHandler.resolvePage_json(msg)
 		}else if (topic.equals("event")){
 			return eventHandler.propogateEvent(msg, metaExpression)
 		}else{
