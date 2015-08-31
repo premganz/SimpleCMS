@@ -49,7 +49,7 @@ class ContentHandler {
 		String expression =pageName;
 		Object page = new PG01O()
 		JsonBuilder builder = new JsonBuilder(page)
-		return builder.toString()		
+		return builder.toPrettyString()		
 	}
 	
 	
