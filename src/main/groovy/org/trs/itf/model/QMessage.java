@@ -4,12 +4,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class DomainMessage {
-	//analogous to active mq messages. though nothing to do with pub sub architecture
-	private String handler;// a named topic 
-	//supported:blankforms, reports, general, 
-	
-	private String fileName;// a named message, 
+public class QMessage {
+	private String repo;
+	private String handler;
+	private String fileName;
 	private String meta;
 	
 	public String getMeta() {
@@ -33,5 +31,14 @@ public class DomainMessage {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
+	public String getRepo() {
+		return repo;
+	}
+	@XmlElement
+	public void setRepo(String repo) {
+		this.repo = repo;
+	}
 
+	
+	
 }

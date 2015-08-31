@@ -9,8 +9,8 @@ import org.trs.itf.model.StateExpressionWrapper;
 class PG01O {
 
 	//Function 00	
-	String PAGE_TITLE
-	String PAGE_SUBTITLE
+	String PAGE_TITLE='Mergers and Amalgamations'
+	String PAGE_SUBTITLE='Source for the best resources'
 		
 	
 	//Function 01

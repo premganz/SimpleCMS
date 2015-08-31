@@ -17,7 +17,7 @@ import javax.xml.bind.JAXBException
 import javax.xml.bind.Unmarshaller
 
 import org.apache.activemq.ActiveMQConnectionFactory
-import org.trs.itf.model.DomainMessage
+import org.trs.itf.model.QMessage
 
 
 
@@ -28,7 +28,7 @@ class GroovyListener extends Thread implements MessageListener{
 	String outText=""
 	public void run() {
 		// Create a ConnectionFactory
-		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
+		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://DAL-CONT056-9w7:61616");
 
 		// Create a Connection
 		Connection connection = connectionFactory.createConnection();
@@ -40,19 +40,19 @@ class GroovyListener extends Thread implements MessageListener{
 		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
 		// Create the destination (Topic or Queue)
-		Destination destination = session.createQueue("MAIN.FOO");
+		Destination destination = session.createQueue("MAIN.2");
 
 		// Create a MessageConsumer from the Session to the Topic or Queue
 		MessageConsumer consumer = session.createConsumer(destination);
-		Message message = consumer.receive(50000);
+		Message message = consumer.receive(500);
 		while(true){
 			TextMessage response =null
 			try {
 			
-				//println 'idle'
+				println 'idle'
 				
 				// Wait for a message
-				message = consumer.receive(50000);
+				message = consumer.receive(3000);
 				
 				response = session.createTextMessage();
 				if (message instanceof TextMessage) {
@@ -102,13 +102,13 @@ class GroovyListener extends Thread implements MessageListener{
 	
 	public String processMessage(String inMessageText){
 			String topic =""
-					DomainMessage domainMessage
+					QMessage domainMessage
 					try {
-						JAXBContext jaxbContext = JAXBContext.newInstance(DomainMessage.class);
+						JAXBContext jaxbContext = JAXBContext.newInstance(QMessage.class);
 
 						Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 						StringReader reader = new StringReader(inMessageText)
-						domainMessage= (DomainMessage) jaxbUnmarshaller.unmarshal(reader);
+						domainMessage= (QMessage) jaxbUnmarshaller.unmarshal(reader);
 						topic = domainMessage.getHandler()
 
 
