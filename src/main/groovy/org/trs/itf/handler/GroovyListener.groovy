@@ -28,7 +28,7 @@ class GroovyListener extends Thread implements MessageListener{
 	String outText=""
 	public void run() {
 		// Create a ConnectionFactory
-		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
+		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://dal-cont056-9w7:61616");
 
 		// Create a Connection
 		Connection connection = connectionFactory.createConnection();

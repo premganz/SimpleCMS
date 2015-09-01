@@ -45,10 +45,18 @@ class ContentHandler {
 		return template
 	}
 
-	def resolvePage_json(String pageName){
-		String expression =pageName;
-		Object page = new PG01O()
+	def resolvePage_json(String expression){
+		
+			String[] arr_pageName=expression.split("/");
+			int len = arr_pageName.length;
+			String pageName=arr_pageName[len-1];
+			String function=arr_pageName[len-2];
+		
+		//TODO
+		
+		Object page = new PG01O().function01()
 		JsonBuilder builder = new JsonBuilder(page)
+		
 		return builder.toPrettyString()		
 	}
 	

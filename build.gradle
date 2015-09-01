@@ -16,12 +16,12 @@ dependencies {
 
 tasks.withType(JavaCompile) {
 	options.fork = true
-	options.forkOptions.executable = "/usr/bin/javac"
+	options.forkOptions.executable = "C:/Program Files/Java/jdk1.7.0_25/bin/javac"
 }
 
 tasks.withType(GroovyCompile) {
 	options.fork = true
-	options.forkOptions.executable = "/usr/bin/javac"
+	options.forkOptions.executable = "C:/Program Files/Java/jdk1.7.0_25/bin/javac"
 }
 
 task vh(type: JavaExec) {
