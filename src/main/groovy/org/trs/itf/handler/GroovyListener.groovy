@@ -75,7 +75,7 @@ Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
 					this.replyProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 					this.replyProducer.send(message.getJMSReplyTo(), response);
-					session.commit()
+	
 					println("outext "+outText)
 
 				}
