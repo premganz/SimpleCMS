@@ -26,7 +26,7 @@ import org.trs.itf.model.QMessage
 class GroovyListener extends Thread implements MessageListener{
 	MessageProducer replyProducer
 	JAXBContext jaxbContext = JAXBContext.newInstance(QMessage.class);
-	
+
 	Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
 	String outText=""
@@ -35,48 +35,49 @@ class GroovyListener extends Thread implements MessageListener{
 		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
 
 		// Create a Connection
-		Connection connection = connectionFactory.createConnection();
-		connection.start();
 
-		//connection.setExceptionListener(this);
-
-		// Create a Session
-		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-		// Create the destination (Topic or Queue)
-		Destination destination = session.createQueue("MAIN.2");
-
-		// Create a MessageConsumer from the Session to the Topic or Queue
-		MessageConsumer consumer = session.createConsumer(destination);
-		Message message = consumer.receive(500);
-		this.replyProducer = session.createProducer(null);
 		println 'all set'
 		while(true){
 			TextMessage response =null
+			Connection connection = connectionFactory.createConnection();
 			try {
-			
+
 				println 'idle'
-				
+
 				// Wait for a message
-				
-				message = consumer.receive(3000);				
+
+				connection.start();
+
+				//connection.setExceptionListener(this);
+
+				// Create a Session
+				Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+				// Create the destination (Topic or Queue)
+				Destination destination = session.createQueue("MAIN.2");
+
+				// Create a MessageConsumer from the Session to the Topic or Queue
+				MessageConsumer consumer = session.createConsumer(destination);
+				Message message = consumer.receive(500);
+				this.replyProducer = session.createProducer(null);
+				message = consumer.receive(3000);
 				response = session.createTextMessage();
 				if(message!=null){
 					TextMessage txtMsg = (TextMessage) message;
 					String inMessageText = txtMsg.getText();
 					println("Received: " + inMessageText);
-					//sleep(500)					
+					//sleep(500)
 					outText=processMessage(inMessageText)
-				
+
 					response.setText(outText);
 					response.setJMSCorrelationID(message.getJMSCorrelationID());
-	
+
 					this.replyProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 					this.replyProducer.send(message.getJMSReplyTo(), response);
 					println("outext "+outText)
-				
+
 				}
-				
+
 
 			}catch (Exception e) {
 				System.out.println("Caught: " + e);
@@ -94,6 +95,15 @@ class GroovyListener extends Thread implements MessageListener{
 				this.replyProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 				this.replyProducer.send(message.getJMSReplyTo(), response);
 				continue;
+			}finally{
+				try
+				{
+					connection.close()
+				}
+				catch (Throwable e)
+				{
+					// Swallow
+				}
 			}
 
 			sleep(100);
@@ -101,22 +111,22 @@ class GroovyListener extends Thread implements MessageListener{
 
 
 	}
-	
+
 	public String processMessage(String inMessageText){
-			String topic =""
-					QMessage domainMessage
-					try {
-						StringReader reader = new StringReader(inMessageText)
-						domainMessage= (QMessage) jaxbUnmarshaller.unmarshal(reader);
-						topic = domainMessage.getHandler()
+		String topic =""
+		QMessage domainMessage
+		try {
+			StringReader reader = new StringReader(inMessageText)
+			domainMessage= (QMessage) jaxbUnmarshaller.unmarshal(reader);
+			topic = domainMessage.getHandler()
 
 
-					} catch (JAXBException e) {
-						e.printStackTrace();
-					}
-					
-					return TopicDispatcher.handle(topic, domainMessage.getFileName(), domainMessage.getMeta())
-				 
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+
+		return TopicDispatcher.handle(topic, domainMessage.getFileName(), domainMessage.getMeta())
+
 	}
 	public void onMessage(Message message) {}
 	public synchronized void onException(JMSException ex) {
