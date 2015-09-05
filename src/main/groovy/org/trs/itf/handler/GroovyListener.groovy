@@ -35,7 +35,10 @@ class GroovyListener extends Thread implements MessageListener{
 		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
 
 		// Create a Connection
+		Connection connection = connectionFactory.createConnection();
+		// Wait for a message
 		
+		connection.start();
 		println 'all set'
 		while(true){
 			TextMessage response =null
@@ -43,10 +46,7 @@ class GroovyListener extends Thread implements MessageListener{
 			try {
 			
 				println 'idle'
-				Connection connection = connectionFactory.createConnection();
-				// Wait for a message
 				
-				connection.start();
 		
 				//connection.setExceptionListener(this);
 		
@@ -76,10 +76,10 @@ class GroovyListener extends Thread implements MessageListener{
 					println("outext "+outText)
 					
 					
-				//consumer.close();
-				//replyProducer.close()
-                //session.close();
-                connection.close();
+				consumer.close();
+				replyProducer.close()
+                session.close();
+            //    connection.close();
 				}
 				
 
