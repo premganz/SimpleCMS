@@ -76,9 +76,9 @@ class GroovyListener extends Thread implements MessageListener{
 					println("outext "+outText)
 					
 					
-				consumer.close();
-				replyProducer.close()
-                session.close();
+				//consumer.close();
+				//replyProducer.close()
+                //session.close();
                 connection.close();
 				}
 				
