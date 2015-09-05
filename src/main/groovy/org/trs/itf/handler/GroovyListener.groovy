@@ -33,25 +33,26 @@ class GroovyListener extends Thread implements MessageListener{
 	public void run() {
 		// Create a ConnectionFactory
 		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
-
+Connection connection = connectionFactory.createConnection();
+connection.start();
 		// Create a Connection
-
+Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		println 'all set'
 		while(true){
 			TextMessage response =null
-			Connection connection = connectionFactory.createConnection();
+			
 			try {
 
 				println 'idle'
 
 				// Wait for a message
 
-				connection.start();
+				
 
 				//connection.setExceptionListener(this);
 
 				// Create a Session
-				Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+				 session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
 				// Create the destination (Topic or Queue)
 				Destination destination = session.createQueue("MAIN.2");
@@ -74,6 +75,7 @@ class GroovyListener extends Thread implements MessageListener{
 
 					this.replyProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 					this.replyProducer.send(message.getJMSReplyTo(), response);
+					session.commit()
 					println("outext "+outText)
 
 				}
@@ -83,22 +85,15 @@ class GroovyListener extends Thread implements MessageListener{
 				System.out.println("Caught: " + e);
 				e.printStackTrace();
 				response.setText("ERROR");
+				session.close()
 				//response.setText("RESULT is XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 				//Set the correlation ID from the received message to be the correlation id of the response message
-				//this lets the client identify which message this is a response to if it has more than
-				//one outstanding message to the server
-				response.setJMSCorrelationID(message.getJMSCorrelationID());
-
-				//Send the response to the Destination specified by the JMSReplyTo field ofERROR the received message,
-				//this is presumably a temporary queue created by the client
-				this.replyProducer = session.createProducer(null);
-				this.replyProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-				this.replyProducer.send(message.getJMSReplyTo(), response);
+				
 				continue;
 			}finally{
 				try
 				{
-					connection.close()
+					session.close()
 				}
 				catch (Throwable e)
 				{
