@@ -28,7 +28,7 @@ class GroovyListener extends Thread implements MessageListener{
 	JAXBContext jaxbContext = JAXBContext.newInstance(QMessage.class);
 	
 	Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-	
+
 	String outText=""
 	public void run() {
 		// Create a ConnectionFactory
@@ -58,9 +58,10 @@ class GroovyListener extends Thread implements MessageListener{
 				println 'idle'
 				
 				// Wait for a message
-				message = consumer.receive(3000);
 				
+				message = consumer.receive(3000);				
 				response = session.createTextMessage();
+				if(message!=null){
 					TextMessage txtMsg = (TextMessage) message;
 					String inMessageText = txtMsg.getText();
 					println("Received: " + inMessageText);
@@ -74,7 +75,7 @@ class GroovyListener extends Thread implements MessageListener{
 					this.replyProducer.send(message.getJMSReplyTo(), response);
 					println("outext "+outText)
 				
-				
+				}
 				
 
 			}catch (Exception e) {
