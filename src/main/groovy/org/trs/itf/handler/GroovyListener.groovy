@@ -25,10 +25,14 @@ import org.trs.itf.model.QMessage
 
 class GroovyListener extends Thread implements MessageListener{
 	MessageProducer replyProducer
+	JAXBContext jaxbContext = JAXBContext.newInstance(QMessage.class);
+	
+	Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+	
 	String outText=""
 	public void run() {
 		// Create a ConnectionFactory
-		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://dal-cont056-9w7:61616");
+		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
 
 		// Create a Connection
 		Connection connection = connectionFactory.createConnection();
@@ -45,6 +49,8 @@ class GroovyListener extends Thread implements MessageListener{
 		// Create a MessageConsumer from the Session to the Topic or Queue
 		MessageConsumer consumer = session.createConsumer(destination);
 		Message message = consumer.receive(500);
+		this.replyProducer = session.createProducer(null);
+		println 'all set'
 		while(true){
 			TextMessage response =null
 			try {
@@ -55,7 +61,6 @@ class GroovyListener extends Thread implements MessageListener{
 				message = consumer.receive(3000);
 				
 				response = session.createTextMessage();
-				if (message instanceof TextMessage) {
 					TextMessage txtMsg = (TextMessage) message;
 					String inMessageText = txtMsg.getText();
 					println("Received: " + inMessageText);
@@ -65,14 +70,10 @@ class GroovyListener extends Thread implements MessageListener{
 					response.setText(outText);
 					response.setJMSCorrelationID(message.getJMSCorrelationID());
 	
-					//Send the response to the Destination specified by the JMSReplyTo field ofERROR the received message,
-					//this is presumably a temporary queue created by the client
-					this.replyProducer = session.createProducer(null);
 					this.replyProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 					this.replyProducer.send(message.getJMSReplyTo(), response);
 					println("outext "+outText)
 				
-				}
 				
 				
 
@@ -94,7 +95,7 @@ class GroovyListener extends Thread implements MessageListener{
 				continue;
 			}
 
-			sleep(500);
+			sleep(100);
 		}
 
 
@@ -104,9 +105,6 @@ class GroovyListener extends Thread implements MessageListener{
 			String topic =""
 					QMessage domainMessage
 					try {
-						JAXBContext jaxbContext = JAXBContext.newInstance(QMessage.class);
-
-						Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 						StringReader reader = new StringReader(inMessageText)
 						domainMessage= (QMessage) jaxbUnmarshaller.unmarshal(reader);
 						topic = domainMessage.getHandler()
