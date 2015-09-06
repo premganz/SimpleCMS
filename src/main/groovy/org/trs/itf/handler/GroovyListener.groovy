@@ -24,80 +24,70 @@ import org.trs.itf.model.QMessage
 
 
 class GroovyListener extends Thread implements MessageListener{
-	
+
 	JAXBContext jaxbContext = JAXBContext.newInstance(QMessage.class);
-	
+
 	Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
 	String outText=""
 	public void run() {
 		// Create a ConnectionFactory
 		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
-
-		// Create a Connection
 		Connection connection = connectionFactory.createConnection();
-		// Wait for a message
-		
 		connection.start();
+		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		Destination destination = session.createQueue("MAIN.2");
+		MessageConsumer consumer = session.createConsumer(destination);
+
+		ActiveMQConnectionFactory connectionFactory1 = new ActiveMQConnectionFactory("tcp://localhost:61616");
+		Connection connection1 = connectionFactory1.createConnection();
+		connection1.start();
+		Session session1 = connection1.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		Destination destination1 = session1.createQueue("MAIN.3");
+		MessageProducer replyProducer = session1.createProducer(null);
+		replyProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+
+
+
 		println 'all set'
 		while(true){
 			TextMessage response =null
-			
+
 			try {
-			
 				println 'idle'
+				Message message = consumer.receive(500);
 				
-		
-				//connection.setExceptionListener(this);
-		
-				// Create a Session
-				Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		
-				// Create the destination (Topic or Queue)
-				Destination destination = session.createQueue("MAIN.2");
-		
-				// Create a MessageConsumer from the Session to the Topic or Queue
-				MessageConsumer consumer = session.createConsumer(destination);				
-				MessageProducer replyProducer = session.createProducer(null);
-				Message message = consumer.receive(500);				
-				response = session.createTextMessage();
-				if(message!=null){
+				if(message instanceof TextMessage && ((TextMessage)message).getText()!=null) {
 					TextMessage txtMsg = (TextMessage) message;
 					String inMessageText = txtMsg.getText();
 					println("Received: " + inMessageText);
-					//sleep(500)					
 					outText=processMessage(inMessageText)
-				
-					response.setText(outText);
-					response.setJMSCorrelationID(message.getJMSCorrelationID());
-	
-					replyProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-					replyProducer.send(message.getJMSReplyTo(), response);
 					println("outext "+outText)
-					
-					
-				consumer.close();
-				replyProducer.close()
-                session.close();
-            //    connection.close();
+					response = session1.createTextMessage(outText);
+					replyProducer.send(destination1, response);
+
+					//				replyProducer.close()
+					//				session.close();
+					//				connection.close();
+
 				}
-				
+
 
 			}catch (Exception e) {
 				System.out.println("Caught: " + e);
 				e.printStackTrace();
 				response.setText("ERROR");
-				
+
 				continue;
 			}finally{
-			try
-			{
-			
-			}
-			catch (Throwable e)
-			{
-			// Swallow
-			}
+				try
+				{
+
+				}
+				catch (Throwable e)
+				{
+					// Swallow
+				}
 			}
 
 			sleep(100);
@@ -105,22 +95,23 @@ class GroovyListener extends Thread implements MessageListener{
 
 
 	}
-	
+
 	public String processMessage(String inMessageText){
-			String topic =""
-					QMessage domainMessage
-					try {
-						StringReader reader = new StringReader(inMessageText)
-						domainMessage= (QMessage) jaxbUnmarshaller.unmarshal(reader);
-						topic = domainMessage.getHandler()
+		String topic =""
+		QMessage domainMessage
+		try {
+			StringReader reader = new StringReader(inMessageText)
+			domainMessage= (QMessage) jaxbUnmarshaller.unmarshal(reader);
+			topic = domainMessage.getHandler()
 
 
-					} catch (JAXBException e) {
-						e.printStackTrace();
-					}
-					
-					return TopicDispatcher.handle(topic, domainMessage.getFileName(), domainMessage.getMeta())
-				 
+		} catch (JAXBException e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+		return TopicDispatcher.handle(topic, domainMessage.getFileName(), domainMessage.getMeta())
+
 	}
 	public void onMessage(Message message) {}
 	public synchronized void onException(JMSException ex) {
