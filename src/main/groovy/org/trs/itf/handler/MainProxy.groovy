@@ -5,7 +5,7 @@ package org.trs.itf.handler
 
 class MainProxy {
 public static void main(String[] args) throws Exception {
-	GroovyListener listener = new GroovyListener();
+	GroovyListener2 listener = new GroovyListener2();
 	
 listener.start();
 	
