@@ -39,41 +39,48 @@ class GroovyListener2 extends Thread implements MessageListener{
 		System.out.println("Creating socket to '" + host + "' on port " + port);
 
 		//create the socket server object
-        server = new ServerSocket(port);
-        //keep listens indefinitely until receives 'exit' call or program terminates
-        while(true){
-            System.out.println("Waiting for client request");
-            //creating socket and waiting for client connection
-            Socket socket = server.accept();
-            //read from socket to ObjectInputStream object
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            //convert ObjectInputStream object to String
-            String message = (String) ois.readObject();
-            System.out.println("Message Received: " + message);
-            //create ObjectOutputStream object
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            //write object to Socket
-			outText=processMessage(message)
+		server = new ServerSocket(port);
+		//keep listens indefinitely until receives 'exit' call or program terminates
+		while(true){
+			outText=""
+			System.out.println("Waiting for client request");
+			//creating socket and waiting for client connection
+			Socket socket = server.accept();
+			//read from socket to ObjectInputStream object
+			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+			//convert ObjectInputStream object to String
+			String message = (String) ois.readObject();
+			System.out.println("Message Received: " + message);
+			//create ObjectOutputStream object
+			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+			//write object to Socket
+			try{
+				outText=processMessage(message)
+			}catch(Exception e){
+				e.printStackTrace()
+
+			}
 			println("outext "+outText)
-            oos.writeObject(outText);
-            //close resources
-            ois.close();
-            oos.close();
-            socket.close();
-            //terminate the server if client sends exit request
-            if(message.equalsIgnoreCase("exit")) break;
+			oos.writeObject(outText);
+			//close resources
+			ois.close();
+			oos.close();
+			socket.close();
+			//terminate the server if client sends exit request
+			if(message.equalsIgnoreCase("exit")) break;
+
 			sleep(100);
-        }
-        System.out.println("Shutting down Socket server!!");
-        //close the ServerSocket object
-        server.close();
-		
-		
-		
 		}
+		System.out.println("Shutting down Socket server!!");
+		//close the ServerSocket object
+		server.close();
 
 
-	
+
+	}
+
+
+
 
 	public String processMessage(String inMessageText){
 		String topic =""

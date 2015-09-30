@@ -1,9 +1,9 @@
 package org.trs.data.handler
 
-import groovy.json.JsonBuilder;
+import groovy.json.JsonBuilder
 import groovy.text.SimpleTemplateEngine
 
-import org.trs.cms.pg.itf.PG01O
+import org.trs.cms.pg.fn.M_Home_1
 import org.trs.data.domain.svc.SessionCatalog
 import org.trs.itf.svc.PageReader
 
@@ -49,12 +49,19 @@ class ContentHandler {
 		
 			String[] arr_pageName=expression.split("/");
 			int len = arr_pageName.length;
-			String pageName=arr_pageName[len-1];
+			
+			String pageName=arr_pageName[len-3];
 			String function=arr_pageName[len-2];
+			String param=arr_pageName[len-1];
+			def param1
+			if(param=='null')
+				param1=null
+			//pageName=""
 		
 		//TODO
-		
-		Object page = new PG01O().function01()
+		Class clazz = Class.forName("org.trs.cms.pg.fn."+pageName)
+		Object page = clazz.newInstance().invokeMethod(function,param1)
+		//Object page = new M_Home_1().f01()
 		JsonBuilder builder = new JsonBuilder(page)
 		
 		return builder.toPrettyString()		
