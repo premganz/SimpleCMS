@@ -5,7 +5,7 @@ import groovy.text.SimpleTemplateEngine
 
 import org.trs.cms.pg.fn.M_Home_1
 import org.trs.data.domain.svc.SessionCatalog
-import org.trs.itf.svc.PageReader
+import org.trs.itf.svc.PageService
 
 
 
@@ -17,7 +17,7 @@ class ContentHandler {
 		String moduleName = ""
 		//def pageName
 		//def moduleName
-		PageReader reader = new PageReader();
+		PageService reader = new PageService();
 		if(expression.contains("/")){
 			String[] arr_pageName=expression.split("/");
 			int len = arr_pageName.length;
@@ -67,5 +67,13 @@ class ContentHandler {
 		return builder.toPrettyString()		
 	}
 	
-	
+	def writePage(String content,String meta){
+		
+		
+		PageService reader = new PageService();
+		
+		String pageText = reader.writePage(content,meta)
+		
+			
+	}
 }

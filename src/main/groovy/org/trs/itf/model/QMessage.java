@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class QMessage {
 	private String repo;
 	private String handler;
-	private String fileName;
+	private String content;
 	private String meta;
 	
 	public String getMeta() {
@@ -24,12 +24,16 @@ public class QMessage {
 	public void setHandler(String handler) {
 		this.handler = handler;
 	}
-	public String getFileName() {
-		return fileName;
+	
+	
+	
+	public String getContent() {
+		return content;
 	}
+	
 	@XmlElement
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setContent(String content) {
+		this.content = content;
 	}
 	public String getRepo() {
 		return repo;

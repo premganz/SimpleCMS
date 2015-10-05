@@ -19,6 +19,8 @@ class TopicDispatcher {
 			return ""
 		}else if (topic.equals("pages")){
 			return pageHandler.resolvePage_json(msg)
+		}else if (topic.equals("write")){
+			return pageHandler.writePage(metaExpression,msg)
 		}else if (topic.equals("event")){
 			return eventHandler.propogateEvent(msg, metaExpression)
 		}else{

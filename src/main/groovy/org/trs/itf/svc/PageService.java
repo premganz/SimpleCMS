@@ -1,9 +1,11 @@
 package org.trs.itf.svc;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -12,27 +14,15 @@ import java.util.List;
 
 
 
-public class PageReader {
+public class PageService {
+	String dataRootDir ="C:/Works/data-cms";
+	
 boolean testMode=false;
 	public String readUpPage(String scenario, String pageName){
 		File f = null;
 		StringBuffer buf = new StringBuffer();
-		URL resourceUrl = getClass().getResource("/"+scenario+"/"+pageName+".txt");
-		String resourcePath ="";
-		if(testMode){
-			return "hello test"; 
-		}
 		
-			try {
-				if(resourceUrl!=null && resourceUrl.toURI()!=null){
-				resourcePath = resourceUrl.toURI().getPath();
-				}else{
-					return "URL not found";
-				}
-			} catch (URISyntaxException e1) {
-				e1.printStackTrace();
-			}
-			f= new File(resourcePath);
+			f= new File(dataRootDir+scenario+"/"+pageName+".txt");
 			FileReader reader;
 			try {
 				reader = new FileReader(f);
@@ -67,6 +57,39 @@ boolean testMode=false;
 			buf.append("***EOL***");
 		}
 				return buf.toString();
+		
+	}
+	
+	public void writePage(String fileName, String content){
+		File f = null;
+		StringBuffer buf = new StringBuffer();
+		URL resourceUrl = getClass().getResource("/posts/HelloWorld.html");
+		
+		
+		BufferedWriter writerBuf = null;
+		System.out.println("writing to file "+dataRootDir+"/"+fileName+".txt");
+			f= new File(dataRootDir+"/"+fileName+".txt");
+			FileWriter writer;
+			try {
+				writer= new FileWriter(f);
+				 writerBuf = new BufferedWriter(writer);
+				
+					writerBuf.write(content);
+					
+				
+			} catch (IOException e1) {
+				buf.append("FILE not found");
+				e1.printStackTrace();
+			}
+			finally{
+				try {
+					writerBuf.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					buf.append("ERROR");
+				}
+			}
+	
 		
 	}
 	

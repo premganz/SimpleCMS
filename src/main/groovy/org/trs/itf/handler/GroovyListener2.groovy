@@ -96,7 +96,7 @@ class GroovyListener2 extends Thread implements MessageListener{
 			throw e;
 		}
 
-		return TopicDispatcher.handle(topic, domainMessage.getFileName(), domainMessage.getMeta())
+		return TopicDispatcher.handle(topic, domainMessage.getContent(), domainMessage.getMeta())
 
 	}
 	public void onMessage(Message message) {}
