@@ -3,7 +3,7 @@ package org.trs.cms.pg.fn
 import org.trs.cms.pg.itf.SECTION_LINK
 import org.trs.cms.pg.itf.Tpl_Cont_1
 import org.trs.cms.pg.itf.Tpl_Ovv_1
-import org.trs.itf.svc.PageService;
+import org.trs.cms.pg.svc.PageService;
 
 class M_Content_1 {
 
