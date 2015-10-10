@@ -6,17 +6,25 @@ repositories {
 }
 
 dependencies {
-    runtime 'org.codehaus.groovy:groovy-all:2.3.0'
-	compile 'org.codehaus.groovy:groovy-all:2.3.0'	
+    runtime 'org.codehaus.groovy:groovy-all:2.3.7'
+	compile 'org.codehaus.groovy:groovy-all:2.3.7'
     testCompile 'junit:junit:4.11'
 	compile 'org.apache.activemq:activemq-all:5.4.2'
 	compile 'joda-time:joda-time:2.6'
 	runtime 'joda-time:joda-time:2.6'
 }
 
+tasks.withType(JavaCompile) {
+	options.fork = true
+	options.forkOptions.executable = "/usr/bin/javac"
+}
+
+tasks.withType(GroovyCompile) {
+	options.fork = true
+	options.forkOptions.executable = "/usr/bin/javac"
+}
 
 task vh(type: JavaExec) {
-	systemProperty 'dataDir', 'C:/works/cms-data'
 	main = "org.trs.ifs.gateway.MainProxy"
 	classpath = sourceSets.main.runtimeClasspath
 	
