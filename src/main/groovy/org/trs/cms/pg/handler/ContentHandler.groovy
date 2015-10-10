@@ -45,7 +45,7 @@ class ContentHandler {
 		return template
 	}
 
-	def resolvePage_json(String expression){
+	def resolvePage_obj_json(String expression){
 
 		String[] arr_pageName=expression.split("/");
 		int len = arr_pageName.length;
@@ -65,6 +65,28 @@ class ContentHandler {
 		JsonBuilder builder = new JsonBuilder(page)
 
 		return builder.toPrettyString()
+	}
+
+	def resolvePage_text_json(String expression){
+
+		String[] arr_pageName=expression.split("/");
+		int len = arr_pageName.length;
+
+		String pageName=arr_pageName[len-3];
+		String function=arr_pageName[len-2];
+		String param=arr_pageName[len-1];
+		def param1
+		if(param=='null')
+			param1=null
+		//pageName=""
+
+		//TODO
+		Class clazz = Class.forName("org.trs.cms.pg.fn."+pageName)
+		return clazz.newInstance().invokeMethod(function,param1)
+		//Object page = new M_Home_1().f01()
+		
+
+		
 	}
 
 	def writePage(String content,String meta){

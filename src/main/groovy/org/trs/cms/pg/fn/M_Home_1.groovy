@@ -1,7 +1,9 @@
 package org.trs.cms.pg.fn
 
+import org.trs.Constants
 import org.trs.cms.pg.itf.SECTION_LINK
 import org.trs.cms.pg.itf.Tpl_Ovv_1
+import org.trs.cms.pg.svc.PageService
 
 class M_Home_1 {
 
@@ -21,12 +23,12 @@ class M_Home_1 {
 				[
 					link_title:'Comprehensive Guide to the Amalgamation Procedures in India',
 					link_sub_title:'Lists provisions under the Companies Act',
-					link_id:'home/C01',
+					link_id:'/post?fileName=Test',
 					link_date:'September 1, 2015'
 				]),
 			SECTION_LINK.newInstance(
 				[
-					link_title:'Amalgamations from the Tax Angle',
+					link_title:'Amalgamations - the Tax Angle',
 					link_sub_title:'Income Tax and Stamp Laws',
 					link_id:'home/C02',
 					link_date:'September 1, 2015'
@@ -48,6 +50,12 @@ class M_Home_1 {
 
 	}
 
+	
+	def f02(){
+		PageService reader = new PageService();		
+		String pageText = reader.readUpPage('templates',"M_Home_01")	
+		return pageText	
+	}
 
 }
 

@@ -7,22 +7,23 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.trs.Constants;
+
 
 
 public class PageService {
-	String dataRootDir ="C:/Works/data-cms";
+	String dataRootDir =Constants.path_repo;
 	
 boolean testMode=false;
 	public String readUpPage(String scenario, String pageName){
 		File f = null;
 		StringBuffer buf = new StringBuffer();
 		if(scenario!=null){
-			f= new File(dataRootDir+scenario+"/"+pageName+".txt");
+			f= new File(dataRootDir+"/"+scenario+"/"+pageName+".txt");
 		}else{
 			f= new File(dataRootDir+"/"+pageName+".txt");
 		}
@@ -31,6 +32,7 @@ boolean testMode=false;
 				reader = new FileReader(f);
 				BufferedReader readerBuf = new BufferedReader(reader);
 				try {
+					System.out.println("Trying to read path : "+f.getAbsolutePath()+"name: "+f.getName());
 					String line = readerBuf.readLine();
 					while(line!=null){
 						buf.append(line);

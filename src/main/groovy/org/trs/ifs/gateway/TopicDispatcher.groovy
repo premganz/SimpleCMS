@@ -17,8 +17,10 @@ class TopicDispatcher {
 		if (topic.equals("scenarioChange")){
 			SessionCatalog.setScenario("")
 			return ""
+		}else if (topic.equals("templates")){
+			return pageHandler.resolvePage_text_json(content)
 		}else if (topic.equals("pages")){
-			return pageHandler.resolvePage_json(content)
+			return pageHandler.resolvePage_obj_json(content)
 		}else if (topic.equals("write")){
 			return pageHandler.writePage(metaExpression,content)
 		}else if (topic.equals("fetch")){
